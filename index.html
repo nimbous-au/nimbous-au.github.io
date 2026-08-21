@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nimbous — Software Engineering</title>
+  <meta name="description" content="Nimbous is an Australian software engineering studio building custom software, cloud architecture, and digital systems that last.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    /* ── Tokens ─────────────────────────────────────────────────────── */
+    :root {
+      --bg:           #f6f7f4;
+      --surface:      #eef0ec;
+      --raised:       #ffffff;
+      --border:       #d4d8d2;
+      --text:         #1a2620;
+      --muted:        #5a6e62;
+      --accent:       #2e7d52;
+      --accent-h:     #245f3f;
+      --accent-light: #e2f0e9;
+      --dark:         #1a2620;
+      --hero-bg:      #111e16;
+      --hero-text:    #edeae2;
+      --hero-muted:   #7a9e84;
+
+      --ff-d: 'Syne', system-ui, sans-serif;
+      --ff-b: 'DM Sans', system-ui, sans-serif;
+
+      --pad: clamp(20px, 5vw, 80px);
+      --max: 1180px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:           #0d1610;
+        --surface:      #152019;
+        --raised:       #1d2e22;
+        --border:       #283d2d;
+        --text:         #e2e9e3;
+        --muted:        #8aab92;
+        --accent:       #4aab6f;
+        --accent-h:     #5dc483;
+        --accent-light: #192e1e;
+        --dark:         #0d1610;
+        --hero-bg:      #060e08;
+        --hero-text:    #e2e9e3;
+        --hero-muted:   #7a9e84;
+      }
+    }
+
+    :root[data-theme="light"] {
+      --bg:#f6f7f4;--surface:#eef0ec;--raised:#ffffff;--border:#d4d8d2;
+      --text:#1a2620;--muted:#5a6e62;--accent:#2e7d52;--accent-h:#245f3f;
+      --accent-light:#e2f0e9;--dark:#1a2620;--hero-bg:#111e16;
+      --hero-text:#edeae2;--hero-muted:#7a9e84;
+    }
+    :root[data-theme="dark"] {
+      --bg:#0d1610;--surface:#152019;--raised:#1d2e22;--border:#283d2d;
+      --text:#e2e9e3;--muted:#8aab92;--accent:#4aab6f;--accent-h:#5dc483;
+      --accent-light:#192e1e;--dark:#0d1610;--hero-bg:#060e08;
+      --hero-text:#e2e9e3;--hero-muted:#7a9e84;
+    }
+
+    /* ── Reset ──────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--ff-b);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; border: none; background: none; font: inherit; }
+
+    /* ── Util ───────────────────────────────────────────────────────── */
+    .wrap {
+      max-width: var(--max);
+      margin-inline: auto;
+      padding-inline: var(--pad);
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* ── Nav ────────────────────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 100;
+      padding-block: 16px;
+      background: var(--hero-bg);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: background 0.35s, border-color 0.35s;
+    }
+    .nav.past {
+      background: var(--bg);
+      border-bottom-color: var(--border);
+    }
+    .nav__row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav__logo {
+      font-family: var(--ff-d);
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--hero-text);
+      transition: color 0.35s;
+    }
+    .nav.past .nav__logo { color: var(--text); }
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav__links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--hero-muted);
+      transition: color 0.2s;
+    }
+    .nav__links a:hover { color: var(--hero-text); }
+    .nav.past .nav__links a { color: var(--muted); }
+    .nav.past .nav__links a:hover { color: var(--text); }
+    .nav__cta {
+      background: var(--accent) !important;
+      color: #fff !important;
+      padding: 6px 16px !important;
+      border-radius: 3px;
+    }
+    .nav__cta:hover { background: var(--accent-h) !important; }
+
+    /* ── Hero ───────────────────────────────────────────────────────── */
+    .hero {
+      background: var(--hero-bg);
+      color: var(--hero-text);
+      padding-top: clamp(100px, 14vw, 180px);
+      padding-bottom: clamp(80px, 12vw, 140px);
+      position: relative;
+      overflow: hidden;
+    }
+    /* subtle radial glow */
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(46,125,82,0.18) 0%, transparent 70%);
+      top: -100px;
+      right: -100px;
+      pointer-events: none;
+    }
+    .hero__grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 48px;
+      align-items: end;
+      position: relative;
+    }
+    .hero__eyebrow {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .hero__h1 {
+      font-family: var(--ff-d);
+      font-size: clamp(2.8rem, 6vw, 5.25rem);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      text-wrap: balance;
+    }
+    .hero__h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero__sub {
+      margin-top: 24px;
+      font-size: clamp(1rem, 1.5vw, 1.125rem);
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--hero-muted);
+      max-width: 44ch;
+    }
+    .hero__actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-top: 40px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      padding: 11px 22px;
+      border-radius: 3px;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .btn-fill {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-fill:hover { background: var(--accent-h); }
+    .btn-outline {
+      color: var(--hero-muted);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+    .btn-outline:hover { color: var(--hero-text); border-color: rgba(255,255,255,0.32); }
+
+    /* Stats */
+    .hero__stats {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      align-items: flex-end;
+      padding-bottom: 8px;
+    }
+    .hero__stat {
+      text-align: right;
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .hero__stat:first-child { border-top: 1px solid rgba(255,255,255,0.07); }
+    .hero__stat-n {
+      font-family: var(--ff-d);
+      font-size: 2.25rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--hero-text);
+      font-variant-numeric: tabular-nums;
+    }
+    .hero__stat-l {
+      font-size: 0.75rem;
+      color: var(--hero-muted);
+      margin-top: 3px;
+      letter-spacing: 0.01em;
+    }
+
+    /* ── Section shell ──────────────────────────────────────────────── */
+    .section { padding-block: clamp(60px, 8vw, 100px); }
+    .eyebrow {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+    .sh {
+      font-family: var(--ff-d);
+      font-size: clamp(1.65rem, 3.2vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      text-wrap: balance;
+    }
+    .lead {
+      margin-top: 14px;
+      font-size: 1.0625rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.72;
+      max-width: 50ch;
+    }
+
+    /* ── Services ───────────────────────────────────────────────────── */
+    .services { background: var(--bg); }
+    .services__hd { margin-bottom: 56px; }
+    .services__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2px;
+      background: var(--border);
+    }
+    .svc {
+      background: var(--surface);
+      padding: 40px 32px;
+      transition: background 0.2s;
+    }
+    .svc:hover { background: var(--raised); }
+    .svc__ico {
+      width: 32px;
+      height: 32px;
+      color: var(--accent);
+      margin-bottom: 22px;
+    }
+    .svc__t {
+      font-family: var(--ff-d);
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      margin-bottom: 10px;
+    }
+    .svc__d {
+      font-size: 0.9375rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── About ──────────────────────────────────────────────────────── */
+    .about { background: var(--surface); }
+    .about__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(40px, 6vw, 96px);
+      align-items: center;
+    }
+    .values { margin-top: 36px; display: flex; flex-direction: column; gap: 22px; }
+    .value { display: flex; gap: 14px; align-items: flex-start; }
+    .value__pip {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 9px;
+      flex-shrink: 0;
+    }
+    .value__body { font-size: 0.9375rem; color: var(--muted); line-height: 1.65; }
+    .value__body strong { display: block; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+
+    /* Canvas panel */
+    .about__canvas-wrap {
+      position: relative;
+    }
+    .about__canvas {
+      width: 100%;
+      aspect-ratio: 4/3;
+      display: block;
+      background: var(--hero-bg);
+      border-radius: 4px;
+    }
+    .about__tag {
+      position: absolute;
+      bottom: 18px;
+      left: 18px;
+      background: var(--raised);
+      color: var(--text);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      padding: 10px 14px;
+      border-radius: 3px;
+      line-height: 1.3;
+    }
+    .about__tag span {
+      display: block;
+      font-size: 0.6875rem;
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── Contact ────────────────────────────────────────────────────── */
+    .contact { background: var(--bg); }
+    .contact__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(40px, 6vw, 96px);
+      align-items: start;
+    }
+    .contact__meta { margin-top: 28px; display: flex; flex-direction: column; gap: 12px; }
+    .contact__line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9375rem;
+      color: var(--muted);
+    }
+    .contact__line svg { width: 15px; height: 15px; color: var(--accent); flex-shrink: 0; }
+
+    form { display: flex; flex-direction: column; gap: 14px; }
+    .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .fgrp { display: flex; flex-direction: column; gap: 6px; }
+    label {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: var(--text);
+    }
+    input, textarea {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 10px 14px;
+      font-family: var(--ff-b);
+      font-size: 0.9375rem;
+      color: var(--text);
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      background: var(--raised);
+    }
+    input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.55; }
+    textarea { resize: vertical; min-height: 130px; }
+    .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--dark);
+      color: var(--bg);
+      font-family: var(--ff-b);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      padding: 11px 28px;
+      border-radius: 3px;
+      border: none;
+      cursor: pointer;
+      align-self: flex-start;
+      transition: opacity 0.2s;
+    }
+    .btn-submit:hover { opacity: 0.8; }
+
+    /* ── Footer ─────────────────────────────────────────────────────── */
+    .footer {
+      background: var(--dark);
+      padding-block: 40px;
+    }
+    .footer__row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer__logo {
+      font-family: var(--ff-d);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: rgba(255,255,255,0.82);
+    }
+    .footer__copy { font-size: 0.8125rem; color: rgba(255,255,255,0.38); }
+
+    /* ── Focus visible ──────────────────────────────────────────────── */
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* ── Responsive ─────────────────────────────────────────────────── */
+    @media (max-width: 780px) {
+      .hero__grid { grid-template-columns: 1fr; }
+      .hero__stats { flex-direction: row; align-items: flex-start; flex-wrap: wrap; gap: 0 32px; }
+      .hero__stat { border: none !important; padding: 0; }
+      .hero__stat-n { font-size: 1.75rem; }
+      .about__grid, .contact__grid { grid-template-columns: 1fr; }
+      .about__canvas-wrap { order: -1; }
+      .frow { grid-template-columns: 1fr; }
+      .nav__links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ───────────────────────────────────────────────────────────── -->
+<nav class="nav" id="nav">
+  <div class="wrap nav__row">
+    <a href="#" class="nav__logo">Nimbous</a>
+    <ul class="nav__links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact" class="nav__cta">Get in touch</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero ──────────────────────────────────────────────────────────── -->
+<section class="hero" id="home">
+  <div class="wrap">
+    <div class="hero__grid">
+      <div class="hero__left">
+        <p class="hero__eyebrow">Software Engineering · Australia</p>
+        <h1 class="hero__h1">
+          Software<br>built to<br><em>last.</em>
+        </h1>
+        <p class="hero__sub">
+          We design and build custom software, cloud infrastructure, and digital systems — crafted to be reliable, scalable, and worth maintaining for years.
+        </p>
+        <div class="hero__actions">
+          <a href="#contact" class="btn btn-fill">
+            Start a conversation
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a href="#services" class="btn btn-outline">See our services</a>
+        </div>
+      </div>
+      <div class="hero__stats">
+        <div class="hero__stat">
+          <div class="hero__stat-n">10+</div>
+          <div class="hero__stat-l">Years of engineering</div>
+        </div>
+        <div class="hero__stat">
+          <div class="hero__stat-n">50+</div>
+          <div class="hero__stat-l">Projects delivered</div>
+        </div>
+        <div class="hero__stat">
+          <div class="hero__stat-n">AU</div>
+          <div class="hero__stat-l">Based in Australia</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Services ──────────────────────────────────────────────────────── -->
+<section class="section services" id="services">
+  <div class="wrap">
+    <div class="services__hd reveal">
+      <p class="eyebrow">What we do</p>
+      <h2 class="sh">End-to-end technical capability</h2>
+      <p class="lead">From greenfield builds to modernising legacy systems, we bring depth across the full software lifecycle.</p>
+    </div>
+    <div class="services__grid">
+      <div class="svc reveal">
+        <svg class="svc__ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+        </svg>
+        <h3 class="svc__t">Custom Software Development</h3>
+        <p class="svc__d">Bespoke applications — web, mobile, and API — designed around your workflows, not forced into an off-the-shelf mould.</p>
+      </div>
+      <div class="svc reveal">
+        <svg class="svc__ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+        </svg>
+        <h3 class="svc__t">Cloud Architecture</h3>
+        <p class="svc__d">Scalable, secure infrastructure on AWS and Azure. We design cloud systems that grow with demand and shrink the ops burden.</p>
+      </div>
+      <div class="svc reveal">
+        <svg class="svc__ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="1" ry="1"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+        <h3 class="svc__t">Digital Transformation</h3>
+        <p class="svc__d">Replacing legacy systems and manual processes with modern, integrated digital workflows that compound in value over time.</p>
+      </div>
+      <div class="svc reveal">
+        <svg class="svc__ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <h3 class="svc__t">Technical Consulting</h3>
+        <p class="svc__d">Senior technical advisors embedded in your team — architecture decisions, technology selection, and leadership for critical phases.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── About ──────────────────────────────────────────────────────────── -->
+<section class="section about" id="about">
+  <div class="wrap">
+    <div class="about__grid">
+      <div class="reveal">
+        <p class="eyebrow">About Nimbous</p>
+        <h2 class="sh">A studio that takes the long view</h2>
+        <p class="lead">
+          Nimbous is a small team of engineers and architects based in Australia. We work closely with founders, product teams, and organisations who need software that's genuinely well-built.
+        </p>
+        <div class="values">
+          <div class="value">
+            <div class="value__pip"></div>
+            <div class="value__body">
+              <strong>Quality over velocity</strong>
+              We'd rather ship something right than something fast. Code written carefully costs less to operate and evolve.
+            </div>
+          </div>
+          <div class="value">
+            <div class="value__pip"></div>
+            <div class="value__body">
+              <strong>Small team, full ownership</strong>
+              No sub-contracting. You work directly with the engineers solving the problem.
+            </div>
+          </div>
+          <div class="value">
+            <div class="value__pip"></div>
+            <div class="value__body">
+              <strong>Technology as a means</strong>
+              We choose the simplest technology that solves the problem — not the most impressive one.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="about__canvas-wrap reveal">
+        <canvas class="about__canvas" id="dotCanvas"></canvas>
+        <div class="about__tag">
+          Sydney, Australia
+          <span>Est. 2015</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Contact ────────────────────────────────────────────────────────── -->
+<section class="section contact" id="contact">
+  <div class="wrap">
+    <div class="contact__grid">
+      <div class="reveal">
+        <p class="eyebrow">Get in touch</p>
+        <h2 class="sh">Let's talk about your project</h2>
+        <p class="lead">Whether you're starting something new or untangling something old, we're happy to have an honest conversation about what might help.</p>
+        <div class="contact__meta">
+          <div class="contact__line">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            hello@nimbous.com.au
+          </div>
+          <div class="contact__line">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Sydney, New South Wales
+          </div>
+        </div>
+      </div>
+      <form class="reveal" id="contactForm">
+        <div class="frow">
+          <div class="fgrp">
+            <label for="fname">Name</label>
+            <input type="text" id="fname" name="name" placeholder="Your name" required>
+          </div>
+          <div class="fgrp">
+            <label for="femail">Email</label>
+            <input type="email" id="femail" name="email" placeholder="you@company.com" required>
+          </div>
+        </div>
+        <div class="fgrp">
+          <label for="fcompany">Company</label>
+          <input type="text" id="fcompany" name="company" placeholder="Your company (optional)">
+        </div>
+        <div class="fgrp">
+          <label for="fmessage">Message</label>
+          <textarea id="fmessage" name="message" placeholder="Tell us about your project…" required></textarea>
+        </div>
+        <button type="submit" class="btn-submit">
+          Send message
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ─────────────────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="wrap footer__row">
+    <div class="footer__logo">Nimbous</div>
+    <p class="footer__copy">© 2026 Nimbous Pty Ltd · Sydney, Australia</p>
+  </div>
+</footer>
+
+<script>
+  /* Nav scroll state */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('past', window.scrollY > 50);
+  }, { passive: true });
+
+  /* Scroll reveal */
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('in'));
+  }
+
+  /* Animated dot-grid canvas in About */
+  (function () {
+    const canvas = document.getElementById('dotCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, dots, raf;
+
+    function isDark() {
+      const theme = document.documentElement.getAttribute('data-theme');
+      if (theme === 'dark') return true;
+      if (theme === 'light') return false;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    function setup() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      W = rect.width; H = rect.height;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      ctx.scale(dpr, dpr);
+
+      const cols = 12, rows = 9;
+      dots = [];
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = (c / (cols - 1)) * W * 0.85 + W * 0.075;
+          const y = (r / (rows - 1)) * H * 0.7 + H * 0.15;
+          dots.push({ bx: x, by: y, x, y, phase: Math.random() * Math.PI * 2, speed: 0.3 + Math.random() * 0.4, amp: 1.5 + Math.random() * 2.5, size: 1.5 + Math.random() * 1 });
+        }
+      }
+    }
+
+    function draw(t) {
+      ctx.clearRect(0, 0, W, H);
+      const dark = isDark();
+      const dotColor = dark ? 'rgba(74,171,111,0.55)' : 'rgba(46,125,82,0.45)';
+      const lineColor = dark ? 'rgba(74,171,111,0.12)' : 'rgba(46,125,82,0.1)';
+
+      const ts = t * 0.001;
+      dots.forEach(d => {
+        d.x = d.bx + Math.sin(ts * d.speed + d.phase) * d.amp;
+        d.y = d.by + Math.cos(ts * d.speed * 0.7 + d.phase) * d.amp * 0.7;
+      });
+
+      /* lines between nearby dots */
+      for (let i = 0; i < dots.length; i++) {
+        for (let j = i + 1; j < dots.length; j++) {
+          const dx = dots[i].x - dots[j].x, dy = dots[i].y - dots[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 70) {
+            ctx.beginPath();
+            ctx.moveTo(dots[i].x, dots[i].y);
+            ctx.lineTo(dots[j].x, dots[j].y);
+            ctx.strokeStyle = lineColor;
+            ctx.lineWidth = 0.75;
+            ctx.stroke();
+          }
+        }
+      }
+
+      /* dots */
+      dots.forEach(d => {
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
+        ctx.fillStyle = dotColor;
+        ctx.fill();
+      });
+
+      raf = requestAnimationFrame(draw);
+    }
+
+    setup();
+    raf = requestAnimationFrame(draw);
+    window.addEventListener('resize', () => { cancelAnimationFrame(raf); setup(); raf = requestAnimationFrame(draw); });
+  })();
+
+  /* Contact form → mailto fallback (replace with Formspree endpoint for real submissions) */
+  document.getElementById('contactForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const name = document.getElementById('fname').value;
+    const email = document.getElementById('femail').value;
+    const company = document.getElementById('fcompany').value;
+    const msg = document.getElementById('fmessage').value;
+    const body = encodeURIComponent(`Name: ${name}\nCompany: ${company}\n\n${msg}`);
+    const subject = encodeURIComponent('Project inquiry from ' + name);
+    window.location.href = `mailto:hello@nimbous.com.au?subject=${subject}&body=${body}`;
+  });
+</script>
+
+</body>
+</html>
