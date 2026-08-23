@@ -3,5 +3,8 @@
   "tabWidth": 2,
   "useTabs": false,
   "singleQuote": false,
-  "htmlWhitespaceSensitivity": "css"
+  "plugins": ["prettier-plugin-astro"],
+  "overrides": [
+    { "files": "*.astro", "options": { "parser": "astro" } }
+  ]
 }

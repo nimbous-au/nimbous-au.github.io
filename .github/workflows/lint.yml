@@ -1,4 +1,4 @@
-name: Lint
+name: CI
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  lint:
+  build-and-lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,8 +21,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint HTML
-        run: npm run lint:html
+      - name: Type check
+        run: npm run check
 
-      - name: Check formatting
-        run: npm run lint:format
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build

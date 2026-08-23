@@ -1,0 +1,106 @@
+---
+import { getCollection } from "astro:content";
+import Icon from "./Icon.astro";
+
+const services = (await getCollection("services")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="section" id="services">
+  <div class="wrap">
+    <div class="services__hd reveal">
+      <p class="eyebrow">What we do</p>
+      <h2 class="sh">End-to-end technical capability</h2>
+      <p class="lead">
+        From greenfield builds to modernising legacy systems, we bring depth across the full
+        software lifecycle.
+      </p>
+    </div>
+    <div class="services__grid">
+      {
+        services.map(async (svc) => {
+          const { Content } = await svc.render();
+          return (
+            <div class="svc reveal">
+              <Icon name={svc.data.icon} class="svc__ico" />
+              <h3 class="svc__t">{svc.data.title}</h3>
+              <div class="svc__d">
+                <Content />
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: clamp(60px, 8vw, 100px);
+    background: var(--bg);
+  }
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .sh {
+    font-family: "Syne", system-ui, sans-serif;
+    font-size: clamp(1.65rem, 3.2vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  .lead {
+    margin-top: 14px;
+    font-size: 1.0625rem;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.72;
+    max-width: 50ch;
+  }
+  .services__hd {
+    margin-bottom: 56px;
+  }
+  .services__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2px;
+    background: var(--border);
+  }
+  .svc {
+    background: var(--surface);
+    padding: 40px 32px;
+    transition: background 0.2s;
+  }
+  .svc:hover {
+    background: var(--raised);
+  }
+  .svc__ico {
+    width: 32px;
+    height: 32px;
+    color: var(--accent);
+    margin-bottom: 22px;
+  }
+  .svc__t {
+    font-family: "Syne", system-ui, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin-bottom: 10px;
+  }
+  .svc__d {
+    font-size: 0.9375rem;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  /* strip paragraph margin from markdown content */
+  .svc__d :global(p) {
+    margin: 0;
+  }
+</style>

@@ -3,12 +3,14 @@
 ## Project overview
 
 Single-page GitHub Pages marketing site for Nimbous, an Australian software engineering studio.
-All content lives in `index.html` — no build step, no framework, no bundler.
+Built with Astro + Tailwind CSS. Content for services lives in markdown files.
 
 ## Stack
 
-- Pure HTML5, CSS (inline in `<style>`), vanilla JS (inline in `<script>`)
-- Google Fonts: Syne (headings) + DM Sans (body)
+- **Astro** (static output) — components in `src/components/`, pages in `src/pages/`
+- **Tailwind CSS** — layout/spacing utilities; theming via CSS custom properties
+- **Content collections** — service descriptions in `src/content/services/*.md`
+- **Google Fonts** — Syne (headings, `font-display`) + DM Sans (body, `font-body`)
 - Deployed via GitHub Pages from `main` branch
 
 ## Linting & formatting
@@ -16,17 +18,20 @@ All content lives in `index.html` — no build step, no framework, no bundler.
 Always run before committing:
 
 ```bash
-npm run lint       # html + format check
-npm run format     # auto-fix formatting with Prettier
+npm run lint       # eslint (astro) + stylelint (css)
+npm run check      # astro type check
+npm run format     # prettier (astro, ts, md, css)
+npm run build      # verify the build passes
 ```
 
-Config files: `.htmlhintrc`, `.stylelintrc.json`, `.prettierrc`
+Config files: `eslint.config.js`, `.stylelintrc.json`, `.prettierrc`
 
 ## Design tokens (CSS custom properties)
 
-All colours, spacing, and font stacks are defined as CSS variables in `:root`.
-Do not hard-code values — use the variables. Dark mode is handled via
+Defined in `src/styles/global.css` under `:root`. Dark mode via
 `@media (prefers-color-scheme: dark)` plus `[data-theme]` attribute overrides.
+
+Mapped to Tailwind in `tailwind.config.mjs` so you can use `text-accent`, `bg-surface` etc.
 
 Key tokens:
 - `--accent` / `--accent-h` — primary green
@@ -37,10 +42,26 @@ Key tokens:
 
 ## Conventions
 
-- All sections use `<section id="...">` with a consistent `.section-header` pattern
-- Responsive: mobile-first, breakpoints at 600px and 900px
-- No external JS libraries — keep it dependency-free at runtime
+- Components use scoped `<style>` blocks; global styles only in `src/styles/global.css`
+- `.wrap` utility class = max-width + horizontal padding
+- `.reveal` / `.reveal.in` = scroll-reveal animation (IntersectionObserver in `index.astro`)
+- Responsive: mobile-first, main breakpoint at 780px
+- No external JS libraries at runtime
 - Contact email: vishal.patel@nimbous.com.au
+
+## Adding a service
+
+Create a new file in `src/content/services/`:
+
+```md
+---
+title: Your Service Title
+icon: code   # one of: code | cloud | monitor | users
+order: 5
+---
+
+Your service description here (one paragraph, rendered as markdown).
+```
 
 ## Branch strategy
 
@@ -49,6 +70,6 @@ Key tokens:
 
 ## Do not
 
-- Add a build step or bundler without discussion
-- Introduce runtime dependencies (CDN scripts, npm packages loaded at runtime)
+- Add runtime dependencies (CDN scripts, npm packages loaded at runtime)
 - Push directly to `main`
+- Hard-code colour values — use CSS variables or Tailwind tokens

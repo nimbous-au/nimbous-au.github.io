@@ -1,0 +1,182 @@
+---
+import Icon from "./Icon.astro";
+
+const stats = [
+  { n: "10+", label: "Years of engineering" },
+  { n: "50+", label: "Projects delivered" },
+  { n: "AU", label: "Based in Australia" },
+];
+---
+
+<section class="hero" id="home">
+  <div class="wrap">
+    <div class="hero__grid">
+      <div class="hero__left">
+        <p class="hero__eyebrow">Software Engineering · Australia</p>
+        <h1 class="hero__h1">Software<br />built to<br /><em>last.</em></h1>
+        <p class="hero__sub">
+          We design and build custom software, cloud infrastructure, and digital systems —
+          crafted to be reliable, scalable, and worth maintaining for years.
+        </p>
+        <div class="hero__actions">
+          <a href="#contact" class="btn btn-fill">
+            Start a conversation
+            <Icon name="arrow-right" class="w-4 h-4" />
+          </a>
+          <a href="#services" class="btn btn-outline">See our services</a>
+        </div>
+      </div>
+
+      <div class="hero__stats">
+        {
+          stats.map(({ n, label }) => (
+            <div class="hero__stat">
+              <div class="hero__stat-n">{n}</div>
+              <div class="hero__stat-l">{label}</div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    background: var(--hero-bg);
+    color: var(--hero-text);
+    padding-top: clamp(100px, 14vw, 180px);
+    padding-bottom: clamp(80px, 12vw, 140px);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(46, 125, 82, 0.18) 0%, transparent 70%);
+    top: -100px;
+    right: -100px;
+    pointer-events: none;
+  }
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 48px;
+    align-items: end;
+    position: relative;
+  }
+  .hero__eyebrow {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .hero__h1 {
+    font-family: "Syne", system-ui, sans-serif;
+    font-size: clamp(2.8rem, 6vw, 5.25rem);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .hero__h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .hero__sub {
+    margin-top: 24px;
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--hero-muted);
+    max-width: 44ch;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 40px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    padding: 11px 22px;
+    border-radius: 3px;
+    transition:
+      background 0.2s,
+      color 0.2s,
+      border-color 0.2s;
+  }
+  .btn-fill {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-fill:hover {
+    background: var(--accent-h);
+  }
+  .btn-outline {
+    color: var(--hero-muted);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  .btn-outline:hover {
+    color: var(--hero-text);
+    border-color: rgba(255, 255, 255, 0.32);
+  }
+  .hero__stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: flex-end;
+    padding-bottom: 8px;
+  }
+  .hero__stat {
+    text-align: right;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .hero__stat:first-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .hero__stat-n {
+    font-family: "Syne", system-ui, sans-serif;
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--hero-text);
+    font-variant-numeric: tabular-nums;
+  }
+  .hero__stat-l {
+    font-size: 0.75rem;
+    color: var(--hero-muted);
+    margin-top: 3px;
+    letter-spacing: 0.01em;
+  }
+
+  @media (max-width: 780px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+    }
+    .hero__stats {
+      flex-direction: row;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0 32px;
+    }
+    .hero__stat {
+      border: none !important;
+      padding: 0;
+    }
+    .hero__stat-n {
+      font-size: 1.75rem;
+    }
+  }
+</style>

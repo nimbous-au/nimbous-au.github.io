@@ -1,0 +1,89 @@
+---
+---
+
+<nav class="nav" id="nav">
+  <div class="wrap nav__row">
+    <a href="#" class="nav__logo">Nimbous</a>
+    <ul class="nav__links" role="list">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact" class="nav__cta">Get in touch</a></li>
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    padding-block: 16px;
+    background: var(--hero-bg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition:
+      background 0.35s,
+      border-color 0.35s;
+  }
+  .nav.past {
+    background: var(--bg);
+    border-bottom-color: var(--border);
+  }
+  .nav__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav__logo {
+    font-family: "Syne", system-ui, sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--hero-text);
+    transition: color 0.35s;
+  }
+  .nav.past .nav__logo {
+    color: var(--text);
+  }
+  .nav__links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav__links a {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--hero-muted);
+    transition: color 0.2s;
+  }
+  .nav__links a:hover {
+    color: var(--hero-text);
+  }
+  .nav.past .nav__links a {
+    color: var(--muted);
+  }
+  .nav.past .nav__links a:hover {
+    color: var(--text);
+  }
+  .nav__cta {
+    background: var(--accent) !important;
+    color: #fff !important;
+    padding: 6px 16px !important;
+    border-radius: 3px;
+  }
+  .nav__cta:hover {
+    background: var(--accent-h) !important;
+  }
+  @media (max-width: 780px) {
+    .nav__links {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const nav = document.getElementById("nav")!;
+  window.addEventListener("scroll", () => nav.classList.toggle("past", window.scrollY > 50), {
+    passive: true,
+  });
+</script>

@@ -1,0 +1,35 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap footer__row">
+    <div class="footer__logo">Nimbous</div>
+    <p class="footer__copy">© {year} Nimbous Pty Ltd · Sydney, Australia</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--dark);
+    padding-block: 40px;
+  }
+  .footer__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer__logo {
+    font-family: "Syne", system-ui, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .footer__copy {
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.38);
+  }
+</style>
